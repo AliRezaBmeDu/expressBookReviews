@@ -74,4 +74,73 @@ public_users.get('/review/:isbn',function (req, res) {
     return res.send(books[isbn].reviews)
 });
 
+//getting the list of books in the shop using Promise Callback
+let bookList =  new Promise((resolve,reject)=>{
+    resolve(books);
+  })
+
+// Get the book list available in the shop
+public_users.get('/',function (req, res) {
+  bookList.then(
+    (book)=>res.send(JSON.stringify(book, null, 4)),
+    (error) => res.send("reqquest rejected")
+  );  
+});
+
+// getting the book details based on ISBN using Promise Callbacks
+const isbn = req.params.isbn;
+const theBook = books[isbn]
+let bookIsbn = new Promise(resolve,reject)=>{
+    if(theBook){
+        resolve(theBook)
+    }else{
+        reject("Book not found")
+    }
+}
+public_users.get('/isbn/:isbn',function (req, res) {
+  bookIsbn.then(
+    (book)=>res.send(JSON.stringify(book, null, 4)),
+    (error) => res.send(error)
+  )
+ });
+
+//getting the book details based on  using Promise callbacks
+const author = req.params.author;
+const booksByAuthor = []
+let getAuthor = new Promise((resolve,reject)=>{
+    const ISBN = Object.keys(books)
+    for (let i=0; i<ISBN.length; i++){
+            const isbn = ISBN[i]
+            if ( books[isbn].author === author){
+                booksByAuthor.push(books[isbn])
+            }
+        }
+    resolve(booksByAuthor)
+})
+public_users.get('/author/:author',function (req, res) {
+  getAuthor.then(
+    book =>res.send(JSON.stringify(book, null, 4))
+  );
+});
+
+// getting the book details based on Title using Promise callbacks
+const title = req.params.title;
+const booksByTitle = []
+let getTitle = new Promise((resolve,reject)=>{
+    const ISBN = Object.keys(books)
+    for (let i=0; i<ISBN.length; i++){
+            const isbn = ISBN[i]
+            if ( books[isbn].title === title){
+                booksByTitle.push(books[isbn])
+            }
+        }
+    resolve(booksByTitle)
+})
+public_users.get('/title/:title',function (req, res) {
+  getTitle.then(
+    book =>res.send(JSON.stringify(book, null, 4))
+  );
+});
+
+
 module.exports.general = public_users;
