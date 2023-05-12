@@ -104,7 +104,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
   )
  });
 
-//getting the book details based on  using Promise callbacks
+//getting the book details based on author using Promise callbacks
 const author = req.params.author;
 const booksByAuthor = []
 let getAuthor = new Promise((resolve,reject)=>{
